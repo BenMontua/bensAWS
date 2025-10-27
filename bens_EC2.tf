@@ -1,5 +1,10 @@
 
 
+provider "aws" {
+  profile = "default"
+  region = "eu-central-1"
+  # shared_credentials_files = ["~/.aws/credentials"]
+}
 # Simple EC2 instance with security group
 
 variable "vpc_id" {
@@ -29,7 +34,7 @@ variable "instance_ami" {
 variable "instance_type" {
   description = "EC2 instance type."
   type        = string
-  default     = "t3.micro"
+  default     = "t3.small"
 }
 
 resource "aws_security_group" "ec2_sg" {
@@ -61,18 +66,26 @@ resource "aws_instance" "github" {
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
   key_name = "github"
 
+  root_block_device {
+    volume_size = 50
+    volume_type = "gp3"
+  }
+
   user_data = <<-EOF
     #!/bin/sh
     # Update apk and install additional components
-    apt update
+    sudo apt update
     
-    apt install -y linux-headers-$(uname -r)
+    sudo apt install -y linux-headers-$(uname -r)
+
+    # Increase /tmp (tmpfs) size to 10G
+    sudo mount -o remount,size=10G /tmp
 
     export version=580.95.05
     export distro=ubuntu2404
     export arch=arm64
 
-    wget https://developer.download.nvidia.com/compute/nvidia-driver/$version/local_installers/nvidia-driver-local-repo-$distro-$version_$arch.deb
+    # wget https://developer.download.nvidia.com/compute/nvidia-driver/$version/local_installers/nvidia-driver-local-repo-$distro-$version_$arch.deb
   EOF
 
   tags = {
