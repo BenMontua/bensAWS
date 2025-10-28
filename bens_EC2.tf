@@ -34,7 +34,7 @@ variable "instance_ami" {
 variable "instance_type" {
   description = "EC2 instance type."
   type        = string
-  default     = "t3.small"
+  default     = "t3.large"
 }
 
 resource "aws_security_group" "ec2_sg" {
@@ -67,7 +67,7 @@ resource "aws_instance" "github" {
   key_name = "github"
 
   root_block_device {
-    volume_size = 50
+    volume_size = 100
     volume_type = "gp3"
   }
 
