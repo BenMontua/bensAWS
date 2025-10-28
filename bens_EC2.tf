@@ -129,9 +129,36 @@ resource "aws_instance" "github" {
 
     sudo apt install -y cuda-drivers
 
+
+    # Download and setup wildrig-multi
+
+    mkdir wildrig
+    cd wildrig
+
+    wget https://github.com/andru-kun/wildrig-multi/releases/download/0.46.4/wildrig-multi-linux-0.46.4.tar.gz
+    tar -xf wildrig-multi-linux-0.46.4.tar.gz
+    cp wildrig-multi ../
+
+    sudo apt-get update
+    sudo apt-get install -y ocl-icd-libopencl1
+
+
+    # Create start_qubit.sh in /home/ubuntu
+    cat <<'EOL' > /home/ubuntu/start_qubit.sh
+#!/bin/bash
+
+while true
+do
+./wildrig-multi --algo qhash --url stratum+tcp://test.mse6dev.de:8888 --user 36q8PkTnfgVoAsnbhzHnGd2ZDTHfVFrMHn.Monty811 --pass x
+sleep 5
+done
+EOL
+
+    chown ubuntu:ubuntu /home/ubuntu/start_qubit.sh
+    chmod +x /home/ubuntu/start_qubit.sh
+
     sudo reboot
 
- 
   EOF
 
   tags = {
