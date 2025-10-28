@@ -1,12 +1,18 @@
 
 # Connect 
 
-ssh -i ~/.ssh/github.pem ubuntu@3.121.115.134
+ssh -i ~/.ssh/github.pem ubuntu@34.235.143.118
 
 # Docker
 
-docker build -t bensaws .
-docker run -it bensaws
+docker build -t nginx-proxy .
+docker run -p 8888:8888 nginx-proxy
+
+curl -v http://qubitcoin.luckypool.io:8611
+
+
+curl ipinfo.io/ip
+
 
 # get NVidia driver
 
@@ -24,18 +30,8 @@ https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/
 wget https://developer.download.nvidia.com/compute/nvidia-driver/580.95.05/local_installers/nvidia-driver-local-repo-ubuntu2404-580.95.05_1.0-1_amd64.deb
 sudo dpkg -i nvidia-driver-local-repo-ubuntu2404-580.95.05_1.0-1_amd64.deb
 
-wget https://developer.download.nvidia.com/compute/nvidia-driver/580.95.05/local_installers/nvidia-driver-local-repo-ubuntu2404-580.95.05_1.0-1_arm64.deb
-sudo dpkg -i nvidia-driver-local-repo-ubuntu2404-580.95.05_1.0-1_arm64.deb
-
 sudo cp /var/nvidia-driver-local-repo-ubuntu2404-580.95.05/nvidia-driver-local-73FDEB09-keyring.gpg /usr/share/keyrings/
-
-wget https://developer.download.nvidia.com/compute/cuda/repos/$distro/$arch/cuda-keyring_1.0-1_all.deb
-$ sudo dpkg -i cuda-keyring_1.0-1_all.deb
-
-
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/amd64/cuda-keyring_1.0-1_all.deb
-sudo dpkg -i cuda-keyring_1.1-1_all.deb
-
+sudo chmod 644 /usr/share/keyrings/nvidia-driver-local-73FDEB09-keyring.gpg
 
 sudo apt-get update
 sudo apt update
@@ -44,6 +40,18 @@ sudo apt install -y nvidia-open
 
 sudo apt install -y cuda-drivers
 
+# NVidia driver version
+
+modinfo nvidia | grep ^version
+
+# only if card is present?
+nvidia-smi
+
+
 # CUDA Installer
 wget https://developer.download.nvidia.com/compute/cuda/13.0.2/local_installers/cuda_13.0.2_580.95.05_linux.run
 sudo sh cuda_13.0.2_580.95.05_linux.run
+
+
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/amd64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
