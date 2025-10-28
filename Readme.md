@@ -5,8 +5,8 @@ ssh -i ~/.ssh/github.pem ubuntu@34.235.143.118
 
 # Docker
 
-docker build -t nginx-proxy .
-docker run -p 8888:8888 nginx-proxy
+docker build -t qubit-ha-proxy .
+docker run -d -p 8888:8888 qubit-ha-proxy
 
 curl -v http://qubitcoin.luckypool.io:8611
 
@@ -21,8 +21,6 @@ https://developer.nvidia.com/datacenter-driver-downloads?target_os=Linux&target_
 
 
 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/
-
-
 
 
 # Installation on Ubuntu 24.04
@@ -48,10 +46,13 @@ modinfo nvidia | grep ^version
 nvidia-smi
 
 
-# CUDA Installer
-wget https://developer.download.nvidia.com/compute/cuda/13.0.2/local_installers/cuda_13.0.2_580.95.05_linux.run
-sudo sh cuda_13.0.2_580.95.05_linux.run
+# Wildrig Miner
 
+mkdir wildrig
+cd wildrig
 
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/amd64/cuda-keyring_1.1-1_all.deb
-sudo dpkg -i cuda-keyring_1.1-1_all.deb
+wget https://github.com/andru-kun/wildrig-multi/releases/download/0.46.4/wildrig-multi-linux-0.46.4.tar.gz
+tar -xf wildrig-multi-linux-0.46.4.tar.gz
+
+sudo apt-get update
+sudo apt-get install -y ocl-icd-libopencl1
