@@ -3,5 +3,5 @@ FROM haproxy:alpine
 
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
 
-EXPOSE 8888
+EXPOSE 8888 8889
 CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
