@@ -1,7 +1,7 @@
 
 # Connect 
 
-ssh -i ~/.ssh/github.pem ubuntu@34.229.7.157
+ssh -i ~/.ssh/github.pem ubuntu@184.73.131.29
 
 # Docker
 

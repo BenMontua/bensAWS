@@ -1,3 +1,10 @@
+resource "aws_route53_record" "test_a_record" {
+  zone_id = "Z03430332XH6BD3MKOJ9T"
+  name    = "test"
+  type    = "A"
+  ttl     = 300
+  records = ["109.90.180.219"]
+}
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
   tags = {
@@ -64,7 +71,7 @@ variable "instance_type" {
   description = "EC2 instance type."
   type        = string
   default     = "t3.large"
-  #default     = "g6f.large"
+  #default     = "g4dn.12xlarge"
   
 }
 
@@ -112,38 +119,7 @@ resource "aws_instance" "github" {
     # Increase /tmp (tmpfs) size to 10G
     sudo mount -o remount,size=10G /tmp
  
-    mkdir temp
-    cd temp
-
-    # Install NVidia driver
-    wget https://developer.download.nvidia.com/compute/nvidia-driver/580.95.05/local_installers/nvidia-driver-local-repo-ubuntu2404-580.95.05_1.0-1_amd64.deb
-    sudo dpkg -i nvidia-driver-local-repo-ubuntu2404-580.95.05_1.0-1_amd64.deb
-
-    sudo cp /var/nvidia-driver-local-repo-ubuntu2404-580.95.05/nvidia-driver-local-73FDEB09-keyring.gpg /usr/share/keyrings/
-    sudo chmod 644 /usr/share/keyrings/nvidia-driver-local-73FDEB09-keyring.gpg
-
-    sudo apt-get update
-    #  sudo apt update
-
-    sudo apt install -y nvidia-open
-
-    sudo apt install -y cuda-drivers
-
-
-    # Download and setup wildrig-multi
-
-    mkdir wildrig
-    cd wildrig
-
-    wget https://github.com/andru-kun/wildrig-multi/releases/download/0.46.4/wildrig-multi-linux-0.46.4.tar.gz
-    tar -xf wildrig-multi-linux-0.46.4.tar.gz
-    cp wildrig-multi ../
-
-    sudo apt-get update
-    sudo apt-get install -y ocl-icd-libopencl1
-
-
-    # Create start_qubit.sh in /home/ubuntu
+ # Create start_qubit.sh in /home/ubuntu
     cat <<'EOL' > /home/ubuntu/start_qubit.sh
 #!/bin/bash
 
@@ -156,6 +132,38 @@ EOL
 
     chown ubuntu:ubuntu /home/ubuntu/start_qubit.sh
     chmod +x /home/ubuntu/start_qubit.sh
+
+
+    cd /tmp
+
+    # Install NVidia driver prerequisites
+    wget https://developer.download.nvidia.com/compute/nvidia-driver/580.95.05/local_installers/nvidia-driver-local-repo-ubuntu2404-580.95.05_1.0-1_amd64.deb
+    sudo dpkg -i nvidia-driver-local-repo-ubuntu2404-580.95.05_1.0-1_amd64.deb
+
+    sudo cp /var/nvidia-driver-local-repo-ubuntu2404-580.95.05/nvidia-driver-local-73FDEB09-keyring.gpg /usr/share/keyrings/
+    sudo chmod 644 /usr/share/keyrings/nvidia-driver-local-73FDEB09-keyring.gpg
+
+    sudo apt-get update
+    #  sudo apt update
+
+
+    # Download and setup wildrig-multi
+    mkdir /home/ubuntu/wildrig
+    cd /home/ubuntu/wildrig
+
+    wget https://github.com/andru-kun/wildrig-multi/releases/download/0.46.4/wildrig-multi-linux-0.46.4.tar.gz
+    tar -xf wildrig-multi-linux-0.46.4.tar.gz
+    cp wildrig-multi ../
+    rm -rf /home/ubuntu/wildrig
+
+    sudo apt-get update
+    sudo apt-get install -y ocl-icd-libopencl1
+
+
+    # Install NVidia drivers (takes a while)
+    sudo apt install -y nvidia-open
+
+    sudo apt install -y cuda-drivers
 
     sudo reboot
 
